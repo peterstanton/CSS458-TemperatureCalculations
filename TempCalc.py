@@ -1,5 +1,4 @@
-
-#=======================================================================
+# =======================================================================
 #                        General Documentation
 
 """Single-function module.
@@ -7,7 +6,7 @@
    See function docstring for description.
 """
 
-#-----------------------------------------------------------------------
+# -----------------------------------------------------------------------
 #                       Additional Documentation
 
 #
@@ -25,15 +24,16 @@
 # Copyright (c) 2017-2018 by Peter Stanton.
 # Documentation template provided by Johnny Lin, for more information see
 # the URL http://www.johnny-lin.com/py_pkgs/atmqty/doc/.
-#=======================================================================
+# =======================================================================
 
 
-#---------------- Module General Import and Declarations ---------------
+# ---------------- Module General Import and Declarations ---------------
 
 import numpy as np
 import matplotlib.pyplot as plt
 
-#-------------------- General Function:  temp_calcs ---------------------
+
+# -------------------- General Function:  temp_calcs ---------------------
 
 def temp_calcs():
     """Calculate surface temperature data.
@@ -49,7 +49,7 @@ def temp_calcs():
                         conceals missing values with masking
          + 'temperature': A list used to contain just the temperature measurements to determine
                           basic descriptive statistics: mean, median, standard deviation.
-                          
+
        Output:
        * Mean. The average of all temperatures taken in this data set.
        * Median. The median of all temperatures in this data set.
@@ -60,58 +60,58 @@ def temp_calcs():
        * Lin, J. (2017):  Python: Files, Masks, and Plotting.  
             https://canvas.uw.edu/courses/1151937/assignments/3653728
         """
-    fileobj = open('test.txt', 'r')
+    fileobj = open('ASFG_Ts.txt', 'r')
     fileobj.readline()
     fileobj.readline()
     fileobj.readline()
     parser = fileobj.readline()
     data = parser.split('\t')
     print(data)
-    for line in fileobj: #this should append values by index.
+    for line in fileobj:  # this should append values by index.
         a = line.split('\t')
         print(a)
         if a[0] == '\n':
             continue
         if '\n' in a[0]:
-            data.append(a[0])
+            data.append(float(a[0]))
             data.append(9000000)
             data.append(9000000)
             data.append(9000000)
             continue
-        data.append(a[0])
+        data.append(float(a[0]))
         if a[1] == '\n':
             data.append(9000000)
             data.append(9000000)
             data.append(9000000)
             continue
         if '\n' in a[1]:
-            data.append(a[1])
+            data.append(float(a[1]))
             data.append(9000000)
             data.append(9000000)
             continue
-        data.append(a[1])
+        data.append(float(a[1]))
         if a[2] == '\n':
             data.append(9000000)
             data.append(9000000)
             continue
         if '\n' in a[2]:
-            data.append(a[2])
+            data.append(float(a[2]))
             data.append(9000000)
             continue
-        data.append(a[2])
+        data.append(float(a[2]))
         if a[3] == '\n':
             data.append(9000000)
             continue
-        data.append(a[3])
-    result = np.ma.masked_array(data, mask=data[<=9000000])
-    print(result)
+        data.append(float(a[3]))
+    result = np.array(data)
+    np.ma.masked_greater(result, 8500000)
 
     temperature = list()
     key = 3
-    for index in range(0,len(result)):
+    for index in range(0, len(result)):
         print(index)
         if (index == key):
-            if result[index] == '':
+            if result[index] == 9000000:
                 key += 4
                 continue
             print(result[index])
@@ -119,13 +119,12 @@ def temp_calcs():
             key += 4
     print(temperature)
 
-
     julian_day = list()
     key = 0
-    for index in range(0,len(result)):
+    for index in range(0, len(result)):
         print(index)
         if (index == key):
-            if result[index] == '':
+            if result[index] == 9000000:
                 key += 4
                 continue
             print(result[index])
@@ -146,8 +145,6 @@ def temp_calcs():
     print("Standard Deviation:")
     print(standard_deviation)
 
-
-
     plt.plot(julian_day, temperature)
     plt.axis([min(julian_day), max(julian_day), min(temperature), max(temperature)])
     plt.xlabel("Julian Day")
@@ -155,11 +152,7 @@ def temp_calcs():
     plt.show()
 
 
-
-
-
-
 temp_calcs()
 
-#missing values show up as ''
+# missing values show up as ''
 #  or '\n' in newline.
